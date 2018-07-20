@@ -1,0 +1,55 @@
+const mongo= require('mongodb').MongoClient;
+
+const url= 'mongodb://localhost:27017';
+
+const dbName='shopping';
+let shopping;
+function Connection () {
+  mongo.connect(url,function (err,client) {
+      //console.log(client);
+  shopping = client.db(dbName);
+
+  })
+}
+
+function InsertDocs(db){
+    const collection=shopping.collection('documents');
+// collection.insertMany([
+//     {a:1},
+//     {b:51},
+//     {c:63}
+// ],function (err,result) {
+FindDocs(function (data) {
+    db(data);
+
+})
+
+}
+
+function FindDocs(db) {
+    const collection=shopping.collection('documents');
+    collection.find({}).toArray(function (err,result) {
+        //db(result);
+        DeleteDocs(function (data) {
+            db(data);
+        })
+    })
+
+}
+function  DeleteDocs(db) {
+    const collection = shopping.collection('documents');
+
+    collection.deleteMany({ a : 1 }, function(err, result) {
+       // assert.equal(err, null);
+        //assert.equal(1, result.result.n);
+    //    console.log("Removed the document with the field a equal to 3");
+        db(result);
+    });
+};
+
+
+
+module.exports={
+    InsertDocs,
+    Connection
+}
